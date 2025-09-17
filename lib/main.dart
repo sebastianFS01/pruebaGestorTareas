@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:prueba/presentation/a%C3%B1adirTarea/screen/tarea_screen.dart';
 import 'package:prueba/presentation/home/screen/home_screen.dart';
-import 'package:prueba/presentation/home/screen/tarea_screen.dart';
 
 void main() {
   runApp(const MyApp());
