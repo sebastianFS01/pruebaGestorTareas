@@ -52,9 +52,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 20),
 
               // Caja de lista modularizada
-              const Expanded(
-                child: HomeTaskListBox(),
-              ),
+              const Expanded(child: HomeTaskListBox()),
 
               const SizedBox(height: 12),
 

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import '../widgets/tarea_title_field.dart';
-import '../widgets/tarea_description_field.dart';
-import '../widgets/tarea_estado_selector.dart';
-import '../widgets/tarea_categoria_selector.dart';
-import '../widgets/tarea_preview_box.dart';
-import '../widgets/tarea_action_buttons.dart';
+import '../widgets/editar_tarea_title_field.dart';
+import '../widgets/editar_tarea_description_field.dart';
+import '../widgets/editar_tarea_estado_selector.dart';
+import '../widgets/editar_tarea_categoria_selector.dart';
+import '../widgets/editar_tarea_preview_box.dart';
+import '../widgets/editar_tarea_action_buttons.dart';
 
-class TareaScreen extends StatelessWidget {
-  const TareaScreen({super.key});
+class EditarTareaScreen extends StatelessWidget {
+  const EditarTareaScreen({super.key});
 
-  // Variables de texto y etiquetas
-  final String titleAppBar = '📝 Nueva Tarea';
-  final String labelTitulo = 'Título ✏️';
-  final String labelDescripcion = 'Descripción 🗒️';
-  final String labelEstado = 'Estado';
-  final String labelCategoria = 'Categorías';
+  // Variables de texto y etiquetas para edición
+  final String titleAppBar = '✏️ Editar Tarea';
+  final String labelTitulo = 'Editar título ✏️';
+  final String labelDescripcion = 'Editar descripción 🗒️';
+  final String labelEstado = 'Editar estado';
+  final String labelCategoria = 'Editar categorías';
   final String estadoPendiente = '⏳ Pendiente';
   final String estadoEnCurso = '🚧 En curso';
   final String estadoHecho = '✅ Hecho';
@@ -22,7 +22,7 @@ class TareaScreen extends StatelessWidget {
   final String categoriaPersonal = '🏠 Personal';
   final String categoriaOtro = '✨ Otro';
   final String btnCancelar = '❌ Cancelar';
-  final String btnGuardar = '💾 Guardar';
+  final String btnGuardar = '💾 Guardar cambios';
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +40,13 @@ class TareaScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Título
-            TareaTitleField(label: labelTitulo),
+            EditarTareaTitleField(label: labelTitulo),
             const SizedBox(height: 16),
             // Descripción
-            TareaDescriptionField(label: labelDescripcion),
+            EditarTareaDescriptionField(label: labelDescripcion),
             const SizedBox(height: 18),
             // Estado
-            TareaEstadoSelector(
+            EditarTareaEstadoSelector(
               label: labelEstado,
               pendiente: estadoPendiente,
               enCurso: estadoEnCurso,
@@ -54,7 +54,7 @@ class TareaScreen extends StatelessWidget {
             ),
             const SizedBox(height: 18),
             // Categorías
-            TareaCategoriaSelector(
+            EditarTareaCategoriaSelector(
               label: labelCategoria,
               trabajo: categoriaTrabajo,
               personal: categoriaPersonal,
@@ -62,7 +62,7 @@ class TareaScreen extends StatelessWidget {
             ),
             const SizedBox(height: 18),
             // Espacio para preview o notas extra
-            const TareaPreviewBox(),
+            const EditarTareaPreviewBox(),
             const Spacer(),
             // Botones centrados en un box
             Center(
@@ -72,7 +72,7 @@ class TareaScreen extends StatelessWidget {
                   horizontal: 0,
                 ),
                 width: double.infinity,
-                child: TareaActionButtons(
+                child: EditarTareaActionButtons(
                   btnCancelar: btnCancelar,
                   btnGuardar: btnGuardar,
                   onCancelar: () {},
@@ -81,31 +81,6 @@ class TareaScreen extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _OptionBox extends StatelessWidget {
-  final String text;
-  const _OptionBox({required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 38,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFB0B3B8)),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: Color(0xFF2D3142),
-          fontWeight: FontWeight.w500,
         ),
       ),
     );

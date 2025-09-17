@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prueba/presentation/a%C3%B1adirTarea/screen/tarea_screen.dart';
+
 import 'package:prueba/presentation/home/screen/home_screen.dart';
 
 void main() {
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Gestor de tareas',
-      home: const TareaScreen(),
+      home: const HomeScreen(),
     );
   }
 }
