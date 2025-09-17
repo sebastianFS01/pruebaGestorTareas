@@ -19,9 +19,9 @@ class MyApp extends StatelessWidget {
       title: 'Gestor de tareas',
       initialRoute: HomeScreen().route,
       routes: {
-        HomeScreen().route : (_) => HomeScreen(),
-        TareaScreen().route : (_) => TareaScreen(),
-        HistorialScreen().route : (_) => HistorialScreen(),
+        HomeScreen().route: (_) => HomeScreen(),
+        TareaScreen().route: (_) => TareaScreen(),
+        HistorialScreen().route: (_) => HistorialScreen(),
       },
     );
   }

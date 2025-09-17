@@ -19,9 +19,9 @@ class TareaScreen extends StatelessWidget {
   final String estadoPendiente = '⏳ Pendiente';
   final String estadoEnCurso = '🚧 En curso';
   final String estadoHecho = '✅ Hecho';
-  final String categoriaTrabajo = '💼 Trabajo';
-  final String categoriaPersonal = '🏠 Personal';
-  final String categoriaOtro = '✨ Otro';
+  // final String categoriaTrabajo = '💼 Trabajo';
+  // final String categoriaPersonal = '🏠 Personal';
+  // final String categoriaOtro = '✨ Otro';
   final String btnCancelar = '❌ Cancelar';
   final String btnGuardar = '💾 Guardar';
 
@@ -55,13 +55,8 @@ class TareaScreen extends StatelessWidget {
                 hecho: estadoHecho,
               ),
               const SizedBox(height: 18),
-              // Categorías
-              TareaCategoriaSelector(
-                label: labelCategoria,
-                trabajo: categoriaTrabajo,
-                personal: categoriaPersonal,
-                otro: categoriaOtro,
-              ),
+              // Categorías (ahora campo editable)
+              _CategoriaInputField(label: labelCategoria),
               const SizedBox(height: 18),
               // Espacio para preview o notas extra
               const TareaPreviewBox(),
@@ -90,27 +85,76 @@ class TareaScreen extends StatelessWidget {
   }
 }
 
-class _OptionBox extends StatelessWidget {
-  final String text;
-  const _OptionBox({required this.text});
+// Widget para ingresar categorías personalizadas
+class _CategoriaInputField extends StatefulWidget {
+  final String label;
+  const _CategoriaInputField({required this.label});
+
+  @override
+  State<_CategoriaInputField> createState() => _CategoriaInputFieldState();
+}
+
+class _CategoriaInputFieldState extends State<_CategoriaInputField> {
+  final TextEditingController _controller = TextEditingController();
+  final List<String> _categorias = [];
+
+  void _addCategoria(String value) {
+    final text = value.trim();
+    if (text.isNotEmpty && !_categorias.contains(text)) {
+      setState(() {
+        _categorias.add(text);
+      });
+    }
+    _controller.clear();
+  }
+
+  void _removeCategoria(String value) {
+    setState(() {
+      _categorias.remove(value);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 38,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFB0B3B8)),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: Color(0xFF2D3142),
-          fontWeight: FontWeight.w500,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          widget.label,
+          style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2D3142)),
         ),
-      ),
+        const SizedBox(height: 6),
+        Wrap(
+          spacing: 8,
+          children: _categorias
+              .map((cat) => Chip(
+                    label: Text(cat),
+                    onDeleted: () => _removeCategoria(cat),
+                  ))
+              .toList(),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _controller,
+                decoration: const InputDecoration(
+                  hintText: 'Escribe una categoría y presiona Enter',
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                ),
+                onSubmitted: _addCategoria,
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () => _addCategoria(_controller.text),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

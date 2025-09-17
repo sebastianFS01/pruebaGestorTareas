@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:prueba/domain/models/tarea.dart';
 
+
 class HomeTaskExampleCard extends StatelessWidget {
+  // Textos fijos reutilizables
+  static const String titleApp = "📝 Gestor de Tareas";
+  static const String totalPoints = "⭐ Total de puntos";
+  static const String estado = "📊 Estado";
+  static const String categoria = "🏷️ Categoría";
+  static const String tareas = "Tareas";
+  static const String historial = "Historial";
+
   final Tarea tarea;
 
   const HomeTaskExampleCard({
@@ -29,12 +38,45 @@ class HomeTaskExampleCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Text(
-              tarea.title,
-              style: const TextStyle(
-                color: Color(0xFF2D3142),
-                fontSize: 16,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  tarea.title,
+                  style: const TextStyle(
+                    color: Color(0xFF2D3142),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  tarea.description,
+                  style: const TextStyle(fontSize: 14, color: Colors.black87),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  children: tarea.categoria.map((cat) => Chip(label: Text(cat))).toList(),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Text('$estado: ', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(tarea.estado),
+                    const SizedBox(width: 16),
+                    Text('Prioridad: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(tarea.prioridad),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Text('$totalPoints: ', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text('${tarea.valorPuntos}'),
+                  ],
+                ),
+              ],
             ),
           ),
           IconButton(
