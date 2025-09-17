@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:prueba/presentation/a%C3%B1adirTarea/screen/tarea_screen.dart';
+import 'package:prueba/presentation/historial/screen/historial_screen.dart';
 
 import 'package:prueba/presentation/home/screen/home_screen.dart';
 
@@ -15,7 +17,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Gestor de tareas',
-      home: const HomeScreen(),
+      initialRoute: HomeScreen().route,
+      routes: {
+        HomeScreen().route : (_) => HomeScreen(),
+        TareaScreen().route : (_) => TareaScreen(),
+        HistorialScreen().route : (_) => HistorialScreen(),
+      },
     );
   }
 }

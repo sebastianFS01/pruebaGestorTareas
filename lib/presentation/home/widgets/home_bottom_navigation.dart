@@ -37,7 +37,7 @@ class HomeBottomNavigation extends StatelessWidget {
         Expanded(
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFB0B3B8),
+              backgroundColor: const Color.fromARGB(255, 84, 91, 122),
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),

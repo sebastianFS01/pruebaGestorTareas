@@ -7,6 +7,7 @@ import '../widgets/tarea_preview_box.dart';
 import '../widgets/tarea_action_buttons.dart';
 
 class TareaScreen extends StatelessWidget {
+  final String route = 'tareaScreen';
   const TareaScreen({super.key});
 
   // Variables de texto y etiquetas
@@ -34,53 +35,55 @@ class TareaScreen extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Título
-            TareaTitleField(label: labelTitulo),
-            const SizedBox(height: 16),
-            // Descripción
-            TareaDescriptionField(label: labelDescripcion),
-            const SizedBox(height: 18),
-            // Estado
-            TareaEstadoSelector(
-              label: labelEstado,
-              pendiente: estadoPendiente,
-              enCurso: estadoEnCurso,
-              hecho: estadoHecho,
-            ),
-            const SizedBox(height: 18),
-            // Categorías
-            TareaCategoriaSelector(
-              label: labelCategoria,
-              trabajo: categoriaTrabajo,
-              personal: categoriaPersonal,
-              otro: categoriaOtro,
-            ),
-            const SizedBox(height: 18),
-            // Espacio para preview o notas extra
-            const TareaPreviewBox(),
-            const Spacer(),
-            // Botones centrados en un box
-            Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 100,
-                  horizontal: 0,
-                ),
-                width: double.infinity,
-                child: TareaActionButtons(
-                  btnCancelar: btnCancelar,
-                  btnGuardar: btnGuardar,
-                  onCancelar: () {},
-                  onGuardar: () {},
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Título
+              TareaTitleField(label: labelTitulo),
+              const SizedBox(height: 16),
+              // Descripción
+              TareaDescriptionField(label: labelDescripcion),
+              const SizedBox(height: 18),
+              // Estado
+              TareaEstadoSelector(
+                label: labelEstado,
+                pendiente: estadoPendiente,
+                enCurso: estadoEnCurso,
+                hecho: estadoHecho,
+              ),
+              const SizedBox(height: 18),
+              // Categorías
+              TareaCategoriaSelector(
+                label: labelCategoria,
+                trabajo: categoriaTrabajo,
+                personal: categoriaPersonal,
+                otro: categoriaOtro,
+              ),
+              const SizedBox(height: 18),
+              // Espacio para preview o notas extra
+              const TareaPreviewBox(),
+              // Botones centrados en un box
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 100,
+                    horizontal: 0,
+                  ),
+                  width: double.infinity,
+                  child: TareaActionButtons(
+                    btnCancelar: btnCancelar,
+                    btnGuardar: btnGuardar,
+                    onCancelar: () {},
+                    onGuardar: () {},
+                  ),
                 ),
               ),
-            ),
-          ],
+              SizedBox(height: 50,)
+            ],
+          ),
         ),
       ),
     );

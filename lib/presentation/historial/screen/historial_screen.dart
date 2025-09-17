@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/historial_nota_tile.dart';
 
 class HistorialScreen extends StatelessWidget {
+  final String route = 'historialScreen';
   const HistorialScreen({super.key});
 
   @override

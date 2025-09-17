@@ -10,17 +10,13 @@ class HomeAddTaskButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: SizedBox(
-        width: 48,
-        height: 48,
-        child: FloatingActionButton(
-          backgroundColor: const Color(0xFF4F8A8B),
-          foregroundColor: Colors.white,
-          onPressed: onPressed,
-          child: const Icon(Icons.add, size: 28),
-        ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 40),
+      child: FloatingActionButton(
+        backgroundColor: const Color(0xFF4F8A8B),
+        foregroundColor: Colors.white,
+        onPressed: onPressed,
+        child: const Icon(Icons.add, size: 28),
       ),
     );
   }

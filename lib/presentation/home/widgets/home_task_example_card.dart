@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:prueba/domain/models/tarea.dart';
 
 class HomeTaskExampleCard extends StatelessWidget {
-  final String tareaEjemplo;
+  final Tarea tarea;
 
   const HomeTaskExampleCard({
     super.key,
-    required this.tareaEjemplo,
+    required this.tarea,
   });
 
   @override
@@ -29,7 +30,7 @@ class HomeTaskExampleCard extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              tareaEjemplo,
+              tarea.title,
               style: const TextStyle(
                 color: Color(0xFF2D3142),
                 fontSize: 16,
