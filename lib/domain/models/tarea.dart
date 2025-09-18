@@ -1,4 +1,5 @@
 class Tarea {
+  final int? id;
   final String title;
   final String description;
   final String estado;
@@ -7,6 +8,7 @@ class Tarea {
   final int valorPuntos;
 
   Tarea( {
+    this.id,
     required this.estado,
     required this.prioridad,
     required this.valorPuntos,
