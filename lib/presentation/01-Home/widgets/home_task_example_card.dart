@@ -20,7 +20,7 @@ class HomeTaskExampleCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).pushNamed(
-          TareaScreen().route,
+          TareaScreen.route,
           arguments: {'tarea': tarea, 'isEdit': true},
         );
       },

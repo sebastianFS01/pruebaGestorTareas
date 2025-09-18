@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       initialRoute: HomeScreen().route,
       routes: {
         HomeScreen().route: (_) => HomeScreen(),
-        TareaScreen().route: (_) => TareaScreen(),
+  TareaScreen.route: (_) => const TareaScreen(),
         HistorialScreen().route: (_) => HistorialScreen(),
       },
     );

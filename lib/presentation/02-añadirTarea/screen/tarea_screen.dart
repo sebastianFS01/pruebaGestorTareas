@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import '../widgets/tarea_form.dart';
 
 class TareaScreen extends StatelessWidget {
-  final String route = 'tareaScreen';
-  final dynamic tarea;
-  final bool isEdit;
-  const TareaScreen({super.key, this.tarea, this.isEdit = false});
+
+  static const String route = 'tareaScreen';
+
+  const TareaScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final tarea = args != null && args.containsKey('tarea') ? args['tarea'] : null;
+    final isEdit = args != null && args['isEdit'] == true;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FC),
       appBar: AppBar(
