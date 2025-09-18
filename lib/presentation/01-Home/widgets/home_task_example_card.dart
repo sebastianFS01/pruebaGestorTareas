@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prueba/domain/models/tarea.dart';
+import 'package:prueba/presentation/02-a%C3%B1adirTarea/screen/tarea_screen.dart';
 
 class HomeTaskExampleCard extends StatelessWidget {
   // Textos fijos reutilizables
@@ -18,7 +19,10 @@ class HomeTaskExampleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed('/editarTarea', arguments: tarea);
+        Navigator.of(context).pushNamed(
+          TareaScreen().route,
+          arguments: {'tarea': tarea, 'isEdit': true},
+        );
       },
       child: Container(
         width: double.infinity,
