@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 
 class EditarTareaDescriptionField extends StatelessWidget {
   final String label;
-  const EditarTareaDescriptionField({super.key, required this.label});
+  final String initialValue;
+  const EditarTareaDescriptionField({super.key, required this.label, required this.initialValue});
 
   @override
   Widget build(BuildContext context) {
+    final controller = TextEditingController(text: initialValue);
     return TextField(
+      controller: controller,
       maxLines: 2,
       decoration: InputDecoration(
         labelText: label,

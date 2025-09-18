@@ -3,12 +3,12 @@ import '../widgets/editar_tarea_title_field.dart';
 import '../widgets/editar_tarea_description_field.dart';
 import '../widgets/editar_tarea_estado_selector.dart';
 import '../widgets/editar_tarea_categoria_selector.dart';
-import '../widgets/editar_tarea_preview_box.dart';
+
 import '../widgets/editar_tarea_action_buttons.dart';
 
 class EditarTareaScreen extends StatelessWidget {
-  const EditarTareaScreen({super.key});
-
+  final dynamic tarea;
+  const EditarTareaScreen({super.key, this.tarea});
   // Variables de texto y etiquetas para edición
   final String titleAppBar = '✏️ Editar Tarea';
   final String labelTitulo = 'Editar título ✏️';
@@ -40,10 +40,20 @@ class EditarTareaScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Título
-            EditarTareaTitleField(label: labelTitulo),
+            EditarTareaTitleField(
+              label: labelTitulo,
+              initialValue: tarea != null && tarea.title != null
+                  ? tarea.title
+                  : '',
+            ),
             const SizedBox(height: 16),
             // Descripción
-            EditarTareaDescriptionField(label: labelDescripcion),
+            EditarTareaDescriptionField(
+              label: labelDescripcion,
+              initialValue: tarea != null && tarea.description != null
+                  ? tarea.description
+                  : '',
+            ),
             const SizedBox(height: 18),
             // Estado
             EditarTareaEstadoSelector(
@@ -51,18 +61,20 @@ class EditarTareaScreen extends StatelessWidget {
               pendiente: estadoPendiente,
               enCurso: estadoEnCurso,
               hecho: estadoHecho,
+              initialEstado: tarea != null && tarea.estado != null
+                  ? tarea.estado
+                  : estadoPendiente,
             ),
             const SizedBox(height: 18),
             // Categorías
             EditarTareaCategoriaSelector(
               label: labelCategoria,
-              trabajo: categoriaTrabajo,
-              personal: categoriaPersonal,
-              otro: categoriaOtro,
+              categorias: [categoriaTrabajo, categoriaPersonal, categoriaOtro],
+              initialCategorias: tarea != null && tarea.categoria != null
+                  ? List<String>.from(tarea.categoria)
+                  : [],
             ),
             const SizedBox(height: 18),
-            // Espacio para preview o notas extra
-            const EditarTareaPreviewBox(),
             const Spacer(),
             // Botones centrados en un box
             Center(
@@ -75,7 +87,9 @@ class EditarTareaScreen extends StatelessWidget {
                 child: EditarTareaActionButtons(
                   btnCancelar: btnCancelar,
                   btnGuardar: btnGuardar,
-                  onCancelar: () {},
+                  onCancelar: () {
+                    Navigator.of(context).pop();
+                  },
                   onGuardar: () {},
                 ),
               ),
