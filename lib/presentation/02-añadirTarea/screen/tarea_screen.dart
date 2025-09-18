@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prueba/configuration/constants/responsive.dart';
+import 'package:prueba/domain/models/tarea.dart';
+import 'package:prueba/presentation/02-a%C3%B1adirTarea/helpers/tarea_logic_button.dart';
 import '../widgets/tarea_form.dart';
 
 class TareaScreen extends StatelessWidget {
@@ -39,7 +41,15 @@ class TareaScreen extends StatelessWidget {
             isEdit: isEdit,
             onCancelar: () => Navigator.of(context).pop(),
             onGuardar: (titulo, descripcion, estado, categorias) {
-              // TODO: Implementar lógica de guardado/edición
+               pressButtonCrear(
+                Tarea(
+                  estado: estado, 
+                  prioridad: 'Baja', 
+                  valorPuntos: 50, 
+                  title: titulo, 
+                  description: descripcion, 
+                  categoria: categorias)
+              );
               Navigator.of(context).pop();
             },
           ),

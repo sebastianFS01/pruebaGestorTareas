@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prueba/configuration/constants/responsive.dart';
 import 'package:prueba/domain/models/tarea.dart';
 import 'package:prueba/presentation/01-Home/helpers/home_helper.dart';
+import 'package:prueba/presentation/01-Home/helpers/init_data_helper.dart';
 import '../widgets/home_header.dart';
 import '../widgets/home_state_category_buttons.dart';
 import '../widgets/home_task_example_card.dart';
@@ -9,15 +11,17 @@ import '../widgets/category_filter_chips.dart';
 import '../widgets/home_add_task_button.dart';
 import '../widgets/home_bottom_navigation.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   final route = 'home';
   HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() {
+    return _HomeScreenState();
+  }
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   static const String titleApp = "📝 Gestor de Tareas";
   static const String totalPoints = "⭐ Total de puntos";
   static const String categoria = "🏷️ Categoría";
@@ -33,14 +37,13 @@ class _HomeScreenState extends State<HomeScreen> {
   String searchCategoria = '';
   String? selectedCategoria;
 
-  final Tarea tareaEjemplo = Tarea(
-    title: 'Desarrollo de aplicación',
-    description: 'Desarrollar una app de gestión de tareas en Flutter',
-    categoria: ['Trabajo', 'Desarrollo'],
-    estado: 'En curso',
-    prioridad: 'Alta',
-    valorPuntos: 50,
-  );
+  @override
+  void initState() {
+    super.initState();
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await initData(context, ref);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,16 +117,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
               const SizedBox(height: 20),
-              Expanded(
-                child: ListView.builder(
-                  itemBuilder: (context, index) {
-                    // Aquí podrías filtrar las tareas por estado/categoría si tuvieras una lista
-                    return Column(
-                      children: [HomeTaskExampleCard(tarea: tareaEjemplo)],
-                    );
-                  },
-                  itemCount: 1,
-                ),
+              Consumer(
+                builder: (context, ref, child) {
+                  final tareaEjemplo = ref.watch(tareaProvider);
+                  return Expanded(
+                  child: ListView.builder(
+                    itemBuilder: (context, index) {
+                      // Aquí podrías filtrar las tareas por estado/categoría si tuvieras una lista
+                      return Column(
+                        children: [HomeTaskExampleCard(tarea: tareaEjemplo[index])],
+                      );
+                    },
+                    itemCount: tareaEjemplo.length,
+                  ),
+                );
+                }
               ),
             ],
           ),

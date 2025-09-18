@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prueba/presentation/02-a%C3%B1adirTarea/screen/tarea_screen.dart';
 import 'package:prueba/presentation/03-Historial/screen/historial_screen.dart';
 
 import 'package:prueba/presentation/01-Home/screen/home_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ProviderScope(child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

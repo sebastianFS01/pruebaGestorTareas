@@ -6,11 +6,20 @@ class LocalDatabaseTareas {
 
   LocalDatabaseTareas({required this.isar});
 
-  Future<int> nuevaTarea(TareaCollection tarea) async {
-    final db = isar;
-    final res = db.writeTxn(() async {
-      return await db.tareaCollections.put(tarea);
+
+  Future guardarOcrearTarea(TareaCollection tarea) async {
+    isar.writeTxn(() async {
+      return await isar.tareaCollections.put(tarea);
     });
-    return res;
+  }
+
+  Future <List<TareaCollection>> traerTareas() async{
+    return await isar.tareaCollections.where().findAll();
+  }
+
+  Future<bool> eliminarTarea(int id) async{
+    return await isar.writeTxn(() async{
+      return await isar.tareaCollections.delete(id);
+    });
   }
 }
