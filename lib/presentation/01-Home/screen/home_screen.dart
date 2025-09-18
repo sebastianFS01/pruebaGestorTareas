@@ -26,6 +26,9 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  // Filtro de prioridad
+  String selectedPrioridad = 'Todas';
+  final List<String> prioridades = ['Todas', 'Alta', 'Media', 'Baja'];
   String? userName;
 
   @override
@@ -154,21 +157,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           selectedEstado = estado!;
                         });
                       },
-                      onCategoriaPressed: () {},
+                      onCategoriaPressed: null, // Botón eliminado
                     ),
                   ),
                   const SizedBox(width: 12),
                   DropdownButton<String>(
-                    value: filtroTareas,
-                    items: opcionesFiltro.map((opcion) {
+                    value: selectedPrioridad,
+                    items: prioridades.map((opcion) {
                       return DropdownMenuItem<String>(
                         value: opcion,
-                        child: Text(opcion),
+                        child: Text('Prioridad: $opcion'),
                       );
                     }).toList(),
                     onChanged: (valor) {
                       setState(() {
-                        filtroTareas = valor!;
+                        selectedPrioridad = valor!;
                       });
                     },
                   ),
@@ -201,17 +204,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Consumer(
                 builder: (context, ref, child) {
                   final tareaEjemplo = ref.watch(tareaProvider);
+                  // Filtrado por prioridad
+                  final tareasFiltradas = selectedPrioridad == 'Todas'
+                      ? tareaEjemplo
+                      : tareaEjemplo
+                            .where(
+                              (t) =>
+                                  (t.prioridad ?? '').toLowerCase() ==
+                                  selectedPrioridad.toLowerCase(),
+                            )
+                            .toList();
                   return Expanded(
                     child: ListView.builder(
                       itemBuilder: (context, index) {
-                        // Aquí podrías filtrar las tareas por estado/categoría si tuvieras una lista
                         return Column(
                           children: [
-                            HomeTaskExampleCard(tarea: tareaEjemplo[index]),
+                            HomeTaskExampleCard(tarea: tareasFiltradas[index]),
                           ],
                         );
                       },
-                      itemCount: tareaEjemplo.length,
+                      itemCount: tareasFiltradas.length,
                     ),
                   );
                 },

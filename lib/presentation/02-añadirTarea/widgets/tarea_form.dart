@@ -9,6 +9,7 @@ class TareaForm extends StatefulWidget {
     String descripcion,
     String estado,
     List<String> categorias,
+    String prioridad,
   )?
   onGuardar;
   final VoidCallback? onCancelar;
@@ -35,6 +36,8 @@ class _TareaFormState extends State<TareaForm> {
   List<String> _categorias = [];
   int? _editCategoriaIndex;
   late TextEditingController _editCategoriaController;
+  String? _prioridad;
+  final List<String> _prioridades = ['Alta', 'Media', 'Baja'];
 
   @override
   void initState() {
@@ -49,6 +52,7 @@ class _TareaFormState extends State<TareaForm> {
     _categorias = widget.tarea?.categoria != null
         ? List<String>.from(widget.tarea.categoria)
         : [];
+    _prioridad = widget.tarea?.prioridad ?? null;
   }
 
   @override
@@ -83,6 +87,27 @@ class _TareaFormState extends State<TareaForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Prioridad
+          DropdownButtonFormField<String>(
+            value: _prioridad,
+            decoration: const InputDecoration(
+              labelText: 'Prioridad',
+              border: OutlineInputBorder(),
+              prefixIcon: Icon(Icons.flag, color: Color(0xFF4F8A8B)),
+            ),
+            items: _prioridades
+                .map((p) => DropdownMenuItem(value: p, child: Text(p)))
+                .toList(),
+            validator: (value) => value == null || value.isEmpty
+                ? 'Selecciona una prioridad'
+                : null,
+            onChanged: (value) {
+              setState(() {
+                _prioridad = value;
+              });
+            },
+          ),
+          const SizedBox(height: 16),
           // Título
           TextFormField(
             controller: _tituloController,
@@ -345,7 +370,10 @@ class _TareaFormState extends State<TareaForm> {
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
                           if (_tituloController.text.trim().isEmpty ||
-                              _descripcionController.text.trim().isEmpty) {
+                              _descripcionController.text.trim().isEmpty ||
+                              _prioridad == null ||
+                              _categorias.isEmpty) {
+                            // Validación extra por seguridad
                             return;
                           }
                           if (widget.onGuardar != null) {
@@ -354,6 +382,7 @@ class _TareaFormState extends State<TareaForm> {
                               _descripcionController.text.trim(),
                               _estado,
                               _categorias,
+                              _prioridad!,
                             );
                           }
                         }
