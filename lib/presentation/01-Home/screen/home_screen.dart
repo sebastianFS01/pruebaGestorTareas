@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+import '../widgets/user_name_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prueba/configuration/constants/responsive.dart';
@@ -22,10 +24,91 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+
+  String? userName;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserName();
+     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await initData(context, ref);
+     });
+  }
+
+  Future<void> _loadUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    final name = prefs.getString('userName');
+    if (name == null || name.isEmpty) {
+      await Future.delayed(const Duration(milliseconds: 400));
+      final enteredName = await showUserNameDialog(context);
+      if (enteredName != null && enteredName.isNotEmpty) {
+        await prefs.setString('userName', enteredName);
+        setState(() => userName = enteredName);
+      }
+    } else {
+      setState(() => userName = name);
+    }
+  }
+  // Simulación de lista de tareas (reemplaza por tu lista real)
+  late final List<Tarea> tareas = [
+    Tarea(
+      title: 'Desarrollo de aplicación',
+      description: 'Desarrollar una app de gestión de tareas en Flutter',
+      categoria: ['Trabajo', 'Desarrollo'],
+      estado: 'En curso',
+      prioridad: 'Alta',
+      valorPuntos: 50,
+    ),
+    Tarea(
+      title: 'Limpiar escritorio',
+      description: 'Organizar y limpiar el escritorio de trabajo',
+      categoria: ['Hogar'],
+      estado: 'Pendiente',
+      prioridad: 'Baja',
+      valorPuntos: 10,
+    ),
+    Tarea(
+      title: 'Revisar correos',
+      description: 'Responder correos importantes',
+      categoria: ['Trabajo'],
+      estado: 'Hecho',
+      prioridad: 'Media',
+      valorPuntos: 20,
+    ),
+  ];
+
+  int calcularPuntosTotales() {
+    int total = 0;
+    for (var tarea in tareas) {
+      switch (tarea.prioridad.toLowerCase()) {
+        case 'alta':
+          total += 50;
+          break;
+        case 'media':
+          total += 20;
+          break;
+        case 'baja':
+          total += 10;
+          break;
+        default:
+          total += tarea.valorPuntos;
+      }
+    }
+    return total;
+  }
+
+  int calcularNivel(int puntos) {
+    if (puntos < 100) return 1;
+    if (puntos < 250) return 2;
+    if (puntos < 500) return 3;
+    if (puntos < 1000) return 4;
+    if (puntos < 2000) return 5;
+    return 6 + ((puntos - 2000) ~/ 1000);
+  }
+
   static const String titleApp = "📝 Gestor de Tareas";
-  static const String totalPoints = "⭐ Total de puntos";
   static const String categoria = "🏷️ Categoría";
-  static const String tareas = "Tareas";
   static const String historial = "Historial";
 
   String selectedEstado = 'En curso';
@@ -38,15 +121,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   String? selectedCategoria;
 
   @override
-  void initState() {
-    super.initState();
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await initData(context, ref);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final puntos = calcularPuntosTotales();
+    final nivel = calcularNivel(puntos);
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
@@ -56,9 +133,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               HomeHeader(
-                titleApp: titleApp,
-                totalPoints: totalPoints,
-                progress: 0.6,
+                titleApp: userName == null
+                    ? titleApp
+                    : '$titleApp | 👋 $userName',
+                totalPoints: '⭐ Puntos: $puntos   🏆 Nivel: $nivel',
+                progress: (puntos % 100) / 100,
               ),
               const SizedBox(height: 20),
               const SizedBox(height: 20),
@@ -145,7 +224,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
           child: HomeBottomNavigation(
-            tareas: tareas,
+            // Si HomeBottomNavigation espera un String, puedes pasar tareas.length.toString() o similar
+            tareas: tareas.length.toString(),
             historial: historial,
             onTareasPressed: () {},
             onHistorialPressed: () {

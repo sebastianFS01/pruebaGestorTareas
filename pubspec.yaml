@@ -40,6 +40,7 @@ dependencies:
   isar_flutter_libs: 
     git: 
       url: https://github.com/MrLittleWhite/isar_flutter_libs.git
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

@@ -34,7 +34,7 @@ class HomeHeader extends StatelessWidget {
               totalPoints,
               style: const TextStyle(
                 color: Color(0xFF4F8A8B),
-                fontSize: 24,
+                fontSize: 20,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -47,7 +47,9 @@ class HomeHeader extends StatelessWidget {
                   value: progress,
                   minHeight: 12,
                   backgroundColor: const Color(0xFFE0E5EC),
-                  valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF4F8A8B)),
+                  valueColor: const AlwaysStoppedAnimation<Color>(
+                    Color(0xFF4F8A8B),
+                  ),
                 ),
               ),
             ),
