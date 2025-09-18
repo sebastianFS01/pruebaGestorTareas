@@ -10,7 +10,7 @@ class LocalDatabaseRepositoryImpl implements LocalDatabaseRepository{
   LocalDatabaseRepositoryImpl({required this.datasource});
 
   @override
-  Future<int> nuevaTarea(Tarea tarea) {
+  Future nuevaTarea(Tarea tarea) {
     return datasource.nuevaTarea(tarea);
   }
 
