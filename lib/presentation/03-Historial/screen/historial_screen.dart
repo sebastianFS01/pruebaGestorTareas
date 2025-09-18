@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../widgets/historial_nota_tile.dart';
 
 class HistorialScreen extends StatelessWidget {
-  final String route = 'historialScreen';
-  const HistorialScreen({super.key});
+  static const String route = 'historialScreen';
+  const HistorialScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,10 @@ class HistorialScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFF6F8FC),
       appBar: AppBar(
         backgroundColor: const Color(0xFF2D3142),
-        title: const Text('Historial de Tareas', style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Historial de Tareas',
+          style: TextStyle(color: Colors.white),
+        ),
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
       ),
