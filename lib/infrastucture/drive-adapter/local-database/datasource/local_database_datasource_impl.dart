@@ -10,7 +10,7 @@ class LocalDatabaseDatasourceImpl implements LocalDatabaseDataresource{
   final Future<Isar> _isarFuture = LocalDatabaseHelper.db.isar;
   
   @override
-  Future<int> nuevaTarea(Tarea tarea) async {
+  Future nuevaTarea(Tarea tarea) async {
     final db = await _isarFuture;
     final nuevaTarea = TareaAdapter.toEntity(tarea);
     final res = await LocalDatabaseTareas(isar: db).nuevaTarea(nuevaTarea);
