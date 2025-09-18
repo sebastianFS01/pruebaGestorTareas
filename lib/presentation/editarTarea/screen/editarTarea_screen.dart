@@ -7,7 +7,8 @@ import '../widgets/editar_tarea_preview_box.dart';
 import '../widgets/editar_tarea_action_buttons.dart';
 
 class EditarTareaScreen extends StatelessWidget {
-  const EditarTareaScreen({super.key});
+  final dynamic tarea;
+  const EditarTareaScreen({super.key, this.tarea});
 
   // Variables de texto y etiquetas para edición
   final String titleAppBar = '✏️ Editar Tarea';

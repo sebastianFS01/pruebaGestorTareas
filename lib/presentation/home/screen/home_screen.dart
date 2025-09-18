@@ -9,7 +9,7 @@ import '../widgets/home_bottom_navigation.dart';
 
 class HomeScreen extends StatelessWidget {
   final route = 'home';
-   HomeScreen({super.key}); // ← ahora con const
+  HomeScreen({super.key}); // ← ahora con const
 
   // Textos fijos
   static const String titleApp = "📝 Gestor de Tareas";
@@ -59,9 +59,7 @@ class HomeScreen extends StatelessWidget {
                 child: ListView.builder(
                   itemBuilder: (context, index) {
                     return Column(
-                      children: [
-                        HomeTaskExampleCard(tarea: tareaEjemplo),
-                      ],
+                      children: [HomeTaskExampleCard(tarea: tareaEjemplo)],
                     );
                   },
                   itemCount: 1,
@@ -86,7 +84,7 @@ class HomeScreen extends StatelessWidget {
             historial: historial,
             onTareasPressed: () {},
             onHistorialPressed: () {
-              NavigatorHelper.navegandoHaciaTareas(context);
+              NavigatorHelper.navegandoHaciaHistorial(context);
             },
           ),
         ),
