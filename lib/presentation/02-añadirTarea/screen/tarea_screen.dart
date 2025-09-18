@@ -43,21 +43,22 @@ class TareaScreen extends StatelessWidget {
                 tarea: tarea,
                 isEdit: isEdit,
                 onCancelar: () => Navigator.of(context).pop(),
-                onGuardar: (titulo, descripcion, estado, categorias) {
-                  pressButtonCrear(
-                    context,
-                    ref,
-                    Tarea(
-                      estado: estado,
-                      prioridad: 'Baja',
-                      valorPuntos: 50,
-                      title: titulo,
-                      description: descripcion,
-                      categoria: categorias,
-                    ),
-                  );
-                  Navigator.of(context).pop();
-                },
+                onGuardar:
+                    (titulo, descripcion, estado, categorias, prioridad) {
+                      pressButtonCrear(
+                        context,
+                        ref,
+                        Tarea(
+                          estado: estado,
+                          prioridad: prioridad,
+                          valorPuntos: 50,
+                          title: titulo,
+                          description: descripcion,
+                          categoria: categorias,
+                        ),
+                      );
+                      Navigator.of(context).pop();
+                    },
               );
             },
           ),

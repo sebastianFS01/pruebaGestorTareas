@@ -7,13 +7,14 @@ import 'package:prueba/presentation/02-a%C3%B1adirTarea/helpers/init_categorias.
 
 /// Widget reutilizable para añadir y editar tareas.
 /// Si [tarea] es null, funciona como añadir; si no, como editar.
-class TareaForm extends ConsumerStatefulWidget {
+class TareaForm extends StatefulWidget {
   final dynamic tarea;
   final void Function(
     String titulo,
     String descripcion,
     String estado,
     List<String> categorias,
+    String prioridad,
   )?
   onGuardar;
   final VoidCallback? onCancelar;
@@ -28,16 +29,20 @@ class TareaForm extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<TareaForm> createState() => _TareaFormState();
+  State<TareaForm> createState() => _TareaFormState();
 }
 
-class _TareaFormState extends ConsumerState<TareaForm> {
+class _TareaFormState extends State<TareaForm> {
+  final _formKey = GlobalKey<FormState>();
   late TextEditingController _tituloController;
   late TextEditingController _descripcionController;
   late TextEditingController _nuevaCategoriaController;
   String _estado = '';
   int? _editCategoriaIndex;
   late TextEditingController _editCategoriaController;
+  String? _prioridad;
+  final List<String> _prioridades = ['Alta', 'Media', 'Baja'];
+  List<String> _categorias = [];
 
   @override
   void initState() {
@@ -49,8 +54,10 @@ class _TareaFormState extends ConsumerState<TareaForm> {
     _nuevaCategoriaController = TextEditingController();
     _editCategoriaController = TextEditingController();
     _estado = widget.tarea?.estado ?? '⏳ Pendiente';
-    initCategorias(context, ref);
-
+    _categorias = widget.tarea?.categoria != null
+        ? List<String>.from(widget.tarea.categoria)
+        : [];
+    _prioridad = widget.tarea?.prioridad ?? null;
   }
 
   @override
@@ -76,33 +83,69 @@ class _TareaFormState extends ConsumerState<TareaForm> {
     final String btnGuardar = widget.isEdit
         ? '💾 Guardar cambios'
         : '💾 Guardar';
+
     final estados = ['⏳ Pendiente', '🚧 En curso', '✅ Hecho'];
     final categoriasPredef = ['💼 Trabajo', '🏠 Personal', '✨ Otro'];
-    return Consumer(
-      builder: (context, ref, child) {
-        final _categorias = ref.watch(categoriasProvider);
-        return Column(
+
+    return Form(
+      key: _formKey,
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Prioridad
+          DropdownButtonFormField<String>(
+            value: _prioridad,
+            decoration: const InputDecoration(
+              labelText: 'Prioridad',
+              border: OutlineInputBorder(),
+              prefixIcon: Icon(Icons.flag, color: Color(0xFF4F8A8B)),
+            ),
+            items: _prioridades
+                .map((p) => DropdownMenuItem(value: p, child: Text(p)))
+                .toList(),
+            validator: (value) => value == null || value.isEmpty
+                ? 'Selecciona una prioridad'
+                : null,
+            onChanged: (value) {
+              setState(() {
+                _prioridad = value;
+              });
+            },
+          ),
+          const SizedBox(height: 16),
           // Título
-          TextField(
+          TextFormField(
             controller: _tituloController,
+            maxLength: 30,
             decoration: InputDecoration(
               labelText: labelTitulo,
               labelStyle: const TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF2D3142),
               ),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
               filled: true,
               fillColor: Colors.white,
               prefixIcon: const Icon(Icons.title, color: Color(0xFF4F8A8B)),
             ),
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'El título es obligatorio';
+              }
+              if (value.trim().length > 30) {
+                return 'Máximo 30 caracteres';
+              }
+              return null;
+            },
           ),
           const SizedBox(height: 16),
+
           // Descripción
-          TextField(
+          TextFormField(
             controller: _descripcionController,
+            maxLength: 100,
             maxLines: 2,
             decoration: InputDecoration(
               labelText: labelDescripcion,
@@ -110,13 +153,28 @@ class _TareaFormState extends ConsumerState<TareaForm> {
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF2D3142),
               ),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
               filled: true,
               fillColor: Colors.white,
-              prefixIcon: const Icon(Icons.description, color: Color(0xFF4F8A8B)),
+              prefixIcon: const Icon(
+                Icons.description,
+                color: Color(0xFF4F8A8B),
+              ),
             ),
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'La descripción es obligatoria';
+              }
+              if (value.trim().length > 100) {
+                return 'Máximo 100 caracteres';
+              }
+              return null;
+            },
           ),
           const SizedBox(height: 18),
+
           // Estado
           Text(
             labelEstado,
@@ -145,6 +203,7 @@ class _TareaFormState extends ConsumerState<TareaForm> {
                 .toList(),
           ),
           const SizedBox(height: 18),
+
           // Categorías
           Text(
             labelCategoria,
@@ -154,6 +213,7 @@ class _TareaFormState extends ConsumerState<TareaForm> {
             ),
           ),
           const SizedBox(height: 6),
+
           // Campo para añadir nueva categoría
           Row(
             children: [
@@ -170,25 +230,22 @@ class _TareaFormState extends ConsumerState<TareaForm> {
                   ),
                 ),
               ),
-              Container(
-                color: Colors.red,
-                child: IconButton(
-                  icon: const Icon(Icons.add, color: Color(0xFF4F8A8B)),
-                  onPressed: () {
-                    final nueva = _nuevaCategoriaController.text.trim();
-                    /*  if (nueva.isNotEmpty && !_categorias.contains(nueva)) {
-                      pressButtonCrearCategoria(Categorias(name: nueva));
-                      setState(() {
-                        _categorias.add(nueva);
-                        _nuevaCategoriaController.clear();
-                      });
-                    }*/
-                  },
-                ),
+              IconButton(
+                icon: const Icon(Icons.add, color: Color(0xFF4F8A8B)),
+                onPressed: () {
+                  final nueva = _nuevaCategoriaController.text.trim();
+                  if (nueva.isNotEmpty && !_categorias.contains(nueva)) {
+                    setState(() {
+                      _categorias.add(nueva);
+                      _nuevaCategoriaController.clear();
+                    });
+                  }
+                },
               ),
             ],
           ),
           const SizedBox(height: 8),
+
           // Chips de categorías predefinidas
           Wrap(
             spacing: 8,
@@ -200,16 +257,9 @@ class _TareaFormState extends ConsumerState<TareaForm> {
                     onSelected: (selected) {
                       setState(() {
                         if (selected) {
-                          ref.read(categoriasProvider.notifier).state = [
-                            ...ref.read(categoriasProvider.notifier).state,
-                            Categorias(name: cat),
-                          ];
+                          _categorias.add(cat);
                         } else {
-                          ref.read(categoriasProvider.notifier).state = ref
-                              .read(categoriasProvider.notifier)
-                              .state
-                              .where((c) => c.name != cat)
-                              .toList();
+                          _categorias.remove(cat);
                         }
                       });
                     },
@@ -218,6 +268,7 @@ class _TareaFormState extends ConsumerState<TareaForm> {
                 .toList(),
           ),
           const SizedBox(height: 8),
+
           // Lista de categorías personalizadas con opción de editar/eliminar
           if (_categorias.isNotEmpty)
             Column(
@@ -243,6 +294,7 @@ class _TareaFormState extends ConsumerState<TareaForm> {
                               onSubmitted: (nuevoNombre) {
                                 if (nuevoNombre.trim().isNotEmpty) {
                                   setState(() {
+                                    _categorias[idx] = nuevoNombre.trim();
                                     _editCategoriaIndex = null;
                                   });
                                 }
@@ -250,7 +302,7 @@ class _TareaFormState extends ConsumerState<TareaForm> {
                             ),
                           )
                         else
-                          Expanded(child: Text(cat.name)),
+                          Expanded(child: Text(cat)),
                         IconButton(
                           icon: Icon(
                             isEditing ? Icons.check : Icons.edit,
@@ -262,12 +314,14 @@ class _TareaFormState extends ConsumerState<TareaForm> {
                                 if (_editCategoriaController.text
                                     .trim()
                                     .isNotEmpty) {
-                                  
+                                  _categorias[idx] = _editCategoriaController
+                                      .text
+                                      .trim();
                                 }
                                 _editCategoriaIndex = null;
                               } else {
                                 _editCategoriaIndex = idx;
-                                _editCategoriaController.text = cat.name;
+                                _editCategoriaController.text = cat;
                               }
                             });
                           },
@@ -281,8 +335,9 @@ class _TareaFormState extends ConsumerState<TareaForm> {
                           onPressed: () {
                             setState(() {
                               _categorias.removeAt(idx);
-                              if (_editCategoriaIndex == idx)
+                              if (_editCategoriaIndex == idx) {
                                 _editCategoriaIndex = null;
+                              }
                             });
                           },
                         ),
@@ -293,6 +348,8 @@ class _TareaFormState extends ConsumerState<TareaForm> {
               ],
             ),
           const SizedBox(height: 18),
+
+          // Botones
           Center(
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 0),
@@ -302,7 +359,8 @@ class _TareaFormState extends ConsumerState<TareaForm> {
                   Expanded(
                     child: OutlinedButton(
                       onPressed:
-                          widget.onCancelar ?? () => Navigator.of(context).pop(),
+                          widget.onCancelar ??
+                          () => Navigator.of(context).pop(),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: const Color(0xFF2D3142),
                         side: const BorderSide(color: Color(0xFF2D3142)),
@@ -315,15 +373,24 @@ class _TareaFormState extends ConsumerState<TareaForm> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        /*
-                        if (widget.onGuardar != null) {
-                          widget.onGuardar!(
-                            _tituloController.text,
-                            _descripcionController.text,
-                            _estado,
-                            _categorias,
-                          );
-                        }*/
+                        if (_formKey.currentState?.validate() ?? false) {
+                          if (_tituloController.text.trim().isEmpty ||
+                              _descripcionController.text.trim().isEmpty ||
+                              _prioridad == null ||
+                              _categorias.isEmpty) {
+                            // Validación extra por seguridad
+                            return;
+                          }
+                          if (widget.onGuardar != null) {
+                            widget.onGuardar!(
+                              _tituloController.text.trim(),
+                              _descripcionController.text.trim(),
+                              _estado,
+                              _categorias,
+                              _prioridad!,
+                            );
+                          }
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF4F8A8B),
@@ -339,8 +406,7 @@ class _TareaFormState extends ConsumerState<TareaForm> {
           ),
           const SizedBox(height: 50),
         ],
-      );
-      }
+      ),
     );
   }
 }

@@ -7,7 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prueba/configuration/constants/responsive.dart';
 import 'package:prueba/domain/models/tarea.dart';
+<<<<<<< HEAD
 import 'package:prueba/presentation/01-Home/helpers/init_tareas_helper.dart';
+=======
+import 'package:prueba/presentation/01-Home/helpers/init_data_helper.dart';
+import 'package:prueba/presentation/01-Home/helpers/points_level_helper.dart';
+>>>>>>> 2e24f759d5f46d79e0499466be35c9e87c8e6e66
 import '../widgets/home_header.dart';
 import '../widgets/home_state_category_buttons.dart';
 import '../widgets/home_task_example_card.dart';
@@ -16,44 +21,26 @@ import '../widgets/home_add_task_button.dart';
 import '../widgets/home_bottom_navigation.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
-  final route = 'home';
-  HomeScreen({super.key});
+  static const route = 'home'; // 👈 mejor static const
+  const HomeScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() {
-    return _HomeScreenState();
-  }
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  // Filtro de prioridad
+  String selectedPrioridad = 'Todas';
+  final List<String> prioridades = ['Todas', 'Alta', 'Media', 'Baja'];
   String? userName;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadUserName();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await initData(context, ref);
-    });
-  }
+  List<Tarea> tareasCompletas = [];
+  List<Tarea> tareasPendientes = [];
+  int puntos = 0;
+  int nivel = 1;
 
-  Future<void> _loadUserName() async {
-    final prefs = await SharedPreferences.getInstance();
-    final name = prefs.getString('userName');
-    if (name == null || name.isEmpty) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      final enteredName = await showUserNameDialog(context);
-      if (enteredName != null && enteredName.isNotEmpty) {
-        await prefs.setString('userName', enteredName);
-        setState(() => userName = enteredName);
-      }
-    } else {
-      setState(() => userName = name);
-    }
-  }
-
-  // Simulación de lista de tareas (reemplaza por tu lista real)
-  late final List<Tarea> tareas = [
+  // 👇 mover aquí tareasIniciales
+  final List<Tarea> tareasIniciales = [
     Tarea(
       title: 'Desarrollo de aplicación',
       description: 'Desarrollar una app de gestión de tareas en Flutter',
@@ -80,35 +67,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ),
   ];
 
-  int calcularPuntosTotales() {
-    int total = 0;
-    for (var tarea in tareas) {
-      switch (tarea.prioridad.toLowerCase()) {
-        case 'alta':
-          total += 50;
-          break;
-        case 'media':
-          total += 20;
-          break;
-        case 'baja':
-          total += 10;
-          break;
-        default:
-          total += tarea.valorPuntos;
-      }
-    }
-    return total;
-  }
-
-  int calcularNivel(int puntos) {
-    if (puntos < 100) return 1;
-    if (puntos < 250) return 2;
-    if (puntos < 500) return 3;
-    if (puntos < 1000) return 4;
-    if (puntos < 2000) return 5;
-    return 6 + ((puntos - 2000) ~/ 1000);
-  }
-
   static const String titleApp = "📝 Gestor de Tareas";
   static const String categoria = "🏷️ Categoría";
   static const String historial = "Historial";
@@ -123,9 +81,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   String? selectedCategoria;
 
   @override
+  void initState() {
+    super.initState();
+    _loadUserName();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await initData(context, ref);
+    });
+  }
+
+  Future<void> _loadUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    final name = prefs.getString('userName');
+    if (name == null || name.isEmpty) {
+      await Future.delayed(const Duration(milliseconds: 400));
+      final enteredName = await showUserNameDialog(context);
+      if (enteredName != null && enteredName.isNotEmpty) {
+        await prefs.setString('userName', enteredName);
+        setState(() => userName = enteredName);
+      }
+    } else {
+      setState(() => userName = name);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final puntos = calcularPuntosTotales();
+    final puntos = calcularPuntosTotales(tareasIniciales);
     final nivel = calcularNivel(puntos);
+
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
@@ -142,7 +125,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 progress: (puntos % 100) / 100,
               ),
               const SizedBox(height: 20),
-              const SizedBox(height: 20),
               Row(
                 children: [
                   Expanded(
@@ -154,21 +136,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           selectedEstado = estado!;
                         });
                       },
-                      onCategoriaPressed: () {},
+                      onCategoriaPressed: null, // Botón eliminado
                     ),
                   ),
                   const SizedBox(width: 12),
                   DropdownButton<String>(
-                    value: filtroTareas,
-                    items: opcionesFiltro.map((opcion) {
+                    value: selectedPrioridad,
+                    items: prioridades.map((opcion) {
                       return DropdownMenuItem<String>(
                         value: opcion,
-                        child: Text(opcion),
+                        child: Text('Prioridad: $opcion'),
                       );
                     }).toList(),
                     onChanged: (valor) {
                       setState(() {
-                        filtroTareas = valor!;
+                        selectedPrioridad = valor!;
                       });
                     },
                   ),
@@ -198,23 +180,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 },
               ),
               const SizedBox(height: 20),
-              Consumer(
-                builder: (context, ref, child) {
-                  final tareaEjemplo = ref.watch(tareaProvider);
-                  return Expanded(
-                    child: ListView.builder(
+              Expanded(
+                child: Consumer(
+                  builder: (context, ref, child) {
+                    final tareaEjemplo = ref.watch(tareaProvider);
+                    // Filtrado por prioridad
+                    final tareasFiltradas = selectedPrioridad == 'Todas'
+                        ? tareaEjemplo
+                        : tareaEjemplo
+                              .where(
+                                (t) =>
+                                    (t.prioridad ?? '').toLowerCase() ==
+                                    selectedPrioridad.toLowerCase(),
+                              )
+                              .toList();
+                    return ListView.builder(
                       itemBuilder: (context, index) {
-                        // Aquí podrías filtrar las tareas por estado/categoría si tuvieras una lista
                         return Column(
                           children: [
-                            HomeTaskExampleCard(tarea: tareaEjemplo[index]),
+                            HomeTaskExampleCard(tarea: tareasFiltradas[index]),
                           ],
                         );
                       },
-                      itemCount: tareaEjemplo.length,
-                    ),
-                  );
-                },
+                      itemCount: tareasFiltradas.length,
+                    );
+                  },
+                ),
               ),
             ],
           ),
@@ -232,12 +223,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
           child: HomeBottomNavigation(
-            // Si HomeBottomNavigation espera un String, puedes pasar tareas.length.toString() o similar
-            tareas: tareas.length.toString(),
+            tareas: tareasIniciales.length.toString(), // 👈 corregido
             historial: historial,
             onTareasPressed: () {},
             onHistorialPressed: () {
-              Navigator.pushNamed(context, HistorialScreen().route);
+              Navigator.pushNamed(context, HistorialScreen.route);
             },
           ),
         ),
