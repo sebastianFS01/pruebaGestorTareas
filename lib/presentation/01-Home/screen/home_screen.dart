@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prueba/configuration/constants/responsive.dart';
 import 'package:prueba/domain/models/tarea.dart';
 import 'package:prueba/presentation/01-Home/helpers/home_helper.dart';
 import '../widgets/home_header.dart';
@@ -45,8 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         body: Padding(
-          padding: const EdgeInsets.all(18.0),
+          padding: EdgeInsets.all(Responsive.width(context, 0.045)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

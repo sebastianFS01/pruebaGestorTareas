@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prueba/configuration/constants/responsive.dart';
 import 'package:prueba/domain/models/tarea.dart';
 import 'package:prueba/presentation/02-a%C3%B1adirTarea/screen/tarea_screen.dart';
 
@@ -26,15 +27,15 @@ class HomeTaskExampleCard extends StatelessWidget {
       },
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(Responsive.width(context, 0.04)),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(Responsive.width(context, 0.03)),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.08),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
+              blurRadius: Responsive.width(context, 0.02),
+              offset: Offset(0, Responsive.height(context, 0.005)),
             ),
           ],
         ),
@@ -47,16 +48,16 @@ class HomeTaskExampleCard extends StatelessWidget {
                 children: [
                   Text(
                     tarea.title,
-                    style: const TextStyle(
-                      color: Color(0xFF2D3142),
-                      fontSize: 16,
+                    style: TextStyle(
+                      color: const Color(0xFF2D3142),
+                      fontSize: Responsive.fontSize(context, 16),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: Responsive.height(context, 0.005)),
                   Text(
                     tarea.description,
-                    style: const TextStyle(fontSize: 14, color: Colors.black87),
+                    style: TextStyle(fontSize: Responsive.fontSize(context, 14), color: Colors.black87),
                   ),
                   const SizedBox(height: 8),
                   Wrap(
