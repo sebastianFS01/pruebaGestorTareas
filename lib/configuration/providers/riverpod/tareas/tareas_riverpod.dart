@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prueba/domain/models/tarea.dart';
 
+final tareaProvider = StateProvider<List<Tarea>>((ref) {
+  return [];
+});
+
 class TareaFormProvider extends StateNotifier<TareaState>{
   
   TareaFormProvider():super(TareaState(formKey: GlobalKey<FormState>()));
@@ -30,3 +34,4 @@ class TareaState {
     );
   }
 }
+

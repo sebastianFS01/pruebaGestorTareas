@@ -1,10 +1,12 @@
+import 'package:prueba/configuration/providers/riverpod/tareas/tareas_riverpod.dart';
+import 'package:prueba/presentation/02-a%C3%B1adirTarea/screen/tarea_screen.dart';
+import 'package:prueba/presentation/03-Historial/screen/historial_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/user_name_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prueba/configuration/constants/responsive.dart';
 import 'package:prueba/domain/models/tarea.dart';
-import 'package:prueba/presentation/01-Home/helpers/home_helper.dart';
 import 'package:prueba/presentation/01-Home/helpers/init_data_helper.dart';
 import '../widgets/home_header.dart';
 import '../widgets/home_state_category_buttons.dart';
@@ -24,16 +26,15 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-
   String? userName;
 
   @override
   void initState() {
     super.initState();
     _loadUserName();
-     WidgetsBinding.instance.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       await initData(context, ref);
-     });
+    });
   }
 
   Future<void> _loadUserName() async {
@@ -50,6 +51,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       setState(() => userName = name);
     }
   }
+
   // Simulación de lista de tareas (reemplaza por tu lista real)
   late final List<Tarea> tareas = [
     Tarea(
@@ -200,24 +202,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 builder: (context, ref, child) {
                   final tareaEjemplo = ref.watch(tareaProvider);
                   return Expanded(
-                  child: ListView.builder(
-                    itemBuilder: (context, index) {
-                      // Aquí podrías filtrar las tareas por estado/categoría si tuvieras una lista
-                      return Column(
-                        children: [HomeTaskExampleCard(tarea: tareaEjemplo[index])],
-                      );
-                    },
-                    itemCount: tareaEjemplo.length,
-                  ),
-                );
-                }
+                    child: ListView.builder(
+                      itemBuilder: (context, index) {
+                        // Aquí podrías filtrar las tareas por estado/categoría si tuvieras una lista
+                        return Column(
+                          children: [
+                            HomeTaskExampleCard(tarea: tareaEjemplo[index]),
+                          ],
+                        );
+                      },
+                      itemCount: tareaEjemplo.length,
+                    ),
+                  );
+                },
               ),
             ],
           ),
         ),
         floatingActionButton: HomeAddTaskButton(
           onPressed: () {
-            NavigatorHelper.navegandoHaciaTareas(context);
+            Navigator.pushNamed(
+              context,
+              TareaScreen.route,
+              arguments: {'isEdit': false},
+            );
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
@@ -229,7 +237,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             historial: historial,
             onTareasPressed: () {},
             onHistorialPressed: () {
-              NavigatorHelper.navegandoHaciaHistorial(context);
+              Navigator.pushNamed(context, HistorialScreen().route);
             },
           ),
         ),

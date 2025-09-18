@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prueba/configuration/constants/responsive.dart';
 import 'package:prueba/domain/models/tarea.dart';
 import 'package:prueba/presentation/02-a%C3%B1adirTarea/helpers/tarea_logic_button.dart';
@@ -36,21 +37,28 @@ class TareaScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(Responsive.width(context, 0.045)),
-          child: TareaForm(
-            tarea: tarea,
-            isEdit: isEdit,
-            onCancelar: () => Navigator.of(context).pop(),
-            onGuardar: (titulo, descripcion, estado, categorias) {
-               pressButtonCrear(
-                Tarea(
-                  estado: estado, 
-                  prioridad: 'Baja', 
-                  valorPuntos: 50, 
-                  title: titulo, 
-                  description: descripcion, 
-                  categoria: categorias)
+          child: Consumer(
+            builder: (context, ref, child) {
+              return TareaForm(
+                tarea: tarea,
+                isEdit: isEdit,
+                onCancelar: () => Navigator.of(context).pop(),
+                onGuardar: (titulo, descripcion, estado, categorias) {
+                  pressButtonCrear(
+                    context,
+                    ref,
+                    Tarea(
+                      estado: estado,
+                      prioridad: 'Baja',
+                      valorPuntos: 50,
+                      title: titulo,
+                      description: descripcion,
+                      categoria: categorias,
+                    ),
+                  );
+                  Navigator.of(context).pop();
+                },
               );
-              Navigator.of(context).pop();
             },
           ),
         ),
