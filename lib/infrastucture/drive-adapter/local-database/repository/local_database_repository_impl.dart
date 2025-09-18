@@ -1,4 +1,5 @@
 import 'package:prueba/domain/datasourcers/local-database/local_database_dataresource.dart';
+import 'package:prueba/domain/models/categorias.dart';
 import 'package:prueba/domain/models/tarea.dart';
 import 'package:prueba/domain/repositories/local-database/local_database_repository.dart';
 
@@ -18,7 +19,22 @@ class LocalDatabaseRepositoryImpl implements LocalDatabaseRepository {
   }
   
   @override
-  Future<bool> eliminarTarea() {
-    return datasource.eliminarTarea();
+  Future<bool> eliminarTarea(int id) {
+    return datasource.eliminarTarea(id);
+  }
+  
+  @override
+  Future<bool> eliminarCategoria(int id) {
+    return datasource.eliminarCategoria(id);
+  }
+  
+  @override
+  Future nuevaCategoria(Categorias categoria) {
+    return datasource.nuevaCategoria(categoria);
+  }
+  
+  @override
+  Future<List<Categorias>> traerCategorias() {
+    return datasource.traerCategorias();
   }
 }

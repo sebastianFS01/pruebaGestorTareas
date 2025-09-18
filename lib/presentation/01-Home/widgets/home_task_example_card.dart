@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prueba/configuration/constants/responsive.dart';
 import 'package:prueba/domain/models/tarea.dart';
+import 'package:prueba/presentation/01-Home/helpers/tarea_delete_button.dart';
 import 'package:prueba/presentation/02-a%C3%B1adirTarea/screen/tarea_screen.dart';
 
 class HomeTaskExampleCard extends StatelessWidget {
@@ -111,20 +113,24 @@ class HomeTaskExampleCard extends StatelessWidget {
                         onPressed: () => Navigator.of(context).pop(),
                         child: const Text('Cancelar'),
                       ),
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFB00020),
-                          foregroundColor: Colors.white,
-                        ),
-                        onPressed: () {
-                          // Aquí iría la lógica real de eliminar
-                          Navigator.of(context).pop();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Tarea eliminada')),
-                          );
+                      Consumer(
+                        builder: (context, ref, child) {
+                          return ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFFB00020),
+                            foregroundColor: Colors.white,
+                          ),
+                          onPressed: () {
+                            pressButtonEliminar(context, ref, tarea.id!);
+                            Navigator.of(context).pop();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Tarea eliminada')),
+                            );
+                          },
+                          icon: const Icon(Icons.delete),
+                          label: const Text('Eliminar'),
+                        );
                         },
-                        icon: const Icon(Icons.delete),
-                        label: const Text('Eliminar'),
                       ),
                     ],
                   ),
