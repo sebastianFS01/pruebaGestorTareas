@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+import '../widgets/user_name_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:prueba/configuration/constants/responsive.dart';
 import 'package:prueba/domain/models/tarea.dart';
@@ -18,6 +20,29 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  String? userName;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserName();
+  }
+
+  Future<void> _loadUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    final name = prefs.getString('userName');
+    if (name == null || name.isEmpty) {
+      await Future.delayed(const Duration(milliseconds: 400));
+      final enteredName = await showUserNameDialog(context);
+      if (enteredName != null && enteredName.isNotEmpty) {
+        await prefs.setString('userName', enteredName);
+        setState(() => userName = enteredName);
+      }
+    } else {
+      setState(() => userName = name);
+    }
+  }
   // Simulación de lista de tareas (reemplaza por tu lista real)
   late final List<Tarea> tareas = [
     Tarea(
@@ -101,7 +126,9 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               HomeHeader(
-                titleApp: titleApp,
+                titleApp: userName == null
+                    ? titleApp
+                    : '$titleApp | 👋 $userName',
                 totalPoints: '⭐ Puntos: $puntos   🏆 Nivel: $nivel',
                 progress: (puntos % 100) / 100,
               ),
