@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prueba/configuration/constants/responsive.dart';
 import 'package:prueba/domain/models/tarea.dart';
 import 'package:prueba/presentation/01-Home/helpers/init_data_helper.dart';
+import 'package:prueba/presentation/01-Home/helpers/points_level_helper.dart';
 import '../widgets/home_header.dart';
 import '../widgets/home_state_category_buttons.dart';
 import '../widgets/home_task_example_card.dart';
@@ -83,34 +84,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ),
   ];
 
-  int calcularPuntosTotales() {
-    int total = 0;
-    for (var tarea in tareas) {
-      switch (tarea.prioridad.toLowerCase()) {
-        case 'alta':
-          total += 50;
-          break;
-        case 'media':
-          total += 20;
-          break;
-        case 'baja':
-          total += 10;
-          break;
-        default:
-          total += tarea.valorPuntos;
-      }
-    }
-    return total;
-  }
 
-  int calcularNivel(int puntos) {
-    if (puntos < 100) return 1;
-    if (puntos < 250) return 2;
-    if (puntos < 500) return 3;
-    if (puntos < 1000) return 4;
-    if (puntos < 2000) return 5;
-    return 6 + ((puntos - 2000) ~/ 1000);
-  }
 
   static const String titleApp = "📝 Gestor de Tareas";
   static const String categoria = "🏷️ Categoría";
@@ -127,8 +101,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final puntos = calcularPuntosTotales();
-    final nivel = calcularNivel(puntos);
+  final puntos = calcularPuntosTotales(tareas);
+  final nivel = calcularNivel(puntos);
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
