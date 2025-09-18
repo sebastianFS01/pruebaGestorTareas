@@ -3,7 +3,7 @@ import '../widgets/editar_tarea_title_field.dart';
 import '../widgets/editar_tarea_description_field.dart';
 import '../widgets/editar_tarea_estado_selector.dart';
 import '../widgets/editar_tarea_categoria_selector.dart';
-import '../widgets/editar_tarea_preview_box.dart';
+
 import '../widgets/editar_tarea_action_buttons.dart';
 
 class EditarTareaScreen extends StatelessWidget {
@@ -75,8 +75,6 @@ class EditarTareaScreen extends StatelessWidget {
                   : [],
             ),
             const SizedBox(height: 18),
-            // Espacio para preview o notas extra
-            const EditarTareaPreviewBox(),
             const Spacer(),
             // Botones centrados en un box
             Center(

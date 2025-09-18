@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:prueba/presentation/a%C3%B1adirTarea/screen/tarea_screen.dart';
-import 'package:prueba/presentation/historial/screen/historial_screen.dart';
+import 'package:prueba/presentation/02-a%C3%B1adirTarea/screen/tarea_screen.dart';
+import 'package:prueba/presentation/04-Historial/screen/historial_screen.dart';
 
-import 'package:prueba/presentation/home/screen/home_screen.dart';
-import 'package:prueba/presentation/editarTarea/screen/editarTarea_screen.dart';
+import 'package:prueba/presentation/01-Home/screen/home_screen.dart';
+import 'package:prueba/presentation/03-editarTarea/screen/editarTarea_screen.dart';
 
 void main() {
   runApp(const MyApp());

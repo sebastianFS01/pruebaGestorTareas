@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'editar_tarea_option_box.dart';
 
 class EditarTareaEstadoSelector extends StatefulWidget {
   final String label;

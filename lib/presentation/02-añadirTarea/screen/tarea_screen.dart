@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/tarea_title_field.dart';
 import '../widgets/tarea_description_field.dart';
 import '../widgets/tarea_estado_selector.dart';
-import '../widgets/tarea_categoria_selector.dart';
-import '../widgets/tarea_preview_box.dart';
+
 import '../widgets/tarea_action_buttons.dart';
 
 class TareaScreen extends StatelessWidget {
@@ -58,8 +57,6 @@ class TareaScreen extends StatelessWidget {
               // Categorías (ahora campo editable)
               _CategoriaInputField(label: labelCategoria),
               const SizedBox(height: 18),
-              // Espacio para preview o notas extra
-              const TareaPreviewBox(),
               // Botones centrados en un box
               Center(
                 child: Container(
@@ -71,12 +68,14 @@ class TareaScreen extends StatelessWidget {
                   child: TareaActionButtons(
                     btnCancelar: btnCancelar,
                     btnGuardar: btnGuardar,
-                    onCancelar: () {},
+                    onCancelar: () {
+                      Navigator.of(context).pop();
+                    },
                     onGuardar: () {},
                   ),
                 ),
               ),
-              SizedBox(height: 50,)
+              SizedBox(height: 50),
             ],
           ),
         ),
@@ -121,16 +120,21 @@ class _CategoriaInputFieldState extends State<_CategoriaInputField> {
       children: [
         Text(
           widget.label,
-          style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2D3142)),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF2D3142),
+          ),
         ),
         const SizedBox(height: 6),
         Wrap(
           spacing: 8,
           children: _categorias
-              .map((cat) => Chip(
-                    label: Text(cat),
-                    onDeleted: () => _removeCategoria(cat),
-                  ))
+              .map(
+                (cat) => Chip(
+                  label: Text(cat),
+                  onDeleted: () => _removeCategoria(cat),
+                ),
+              )
               .toList(),
         ),
         const SizedBox(height: 8),
@@ -143,7 +147,10 @@ class _CategoriaInputFieldState extends State<_CategoriaInputField> {
                   hintText: 'Escribe una categoría y presiona Enter',
                   border: OutlineInputBorder(),
                   isDense: true,
-                  contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 12,
+                  ),
                 ),
                 onSubmitted: _addCategoria,
               ),
