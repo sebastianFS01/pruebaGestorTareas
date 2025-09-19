@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:prueba/infrastucture/db/isar/collections/historial.dart';
 import 'package:prueba/infrastucture/db/isar/collections/tarea.dart';
 import 'package:prueba/infrastucture/db/isar/collections/categorias.dart';
 
@@ -20,6 +21,7 @@ class LocalDatabaseHelper {
     return await Isar.open([
       TareaCollectionSchema,
       CategoriasCollectionSchema,
+      HistorialCollectionSchema
     ], directory: dir.path);
   }
 }
