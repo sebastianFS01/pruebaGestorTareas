@@ -19,7 +19,7 @@ import '../widgets/home_add_task_button.dart';
 import '../widgets/home_bottom_navigation.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
-  static const route = 'home'; 
+  static const route = 'home';
   const HomeScreen({super.key});
 
   @override
@@ -90,6 +90,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               const SizedBox(height: 20),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: HomeStateCategoryButtons(
@@ -100,23 +101,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           selectedEstado = estado!;
                         });
                       },
-                      onCategoriaPressed: null, // Botón eliminado
+                      onCategoriaPressed: null,
                     ),
                   ),
                   const SizedBox(width: 12),
-                  DropdownButton<String>(
-                    value: selectedPrioridad,
-                    items: prioridades.map((opcion) {
-                      return DropdownMenuItem<String>(
-                        value: opcion,
-                        child: Text('Prioridad: $opcion'),
-                      );
-                    }).toList(),
-                    onChanged: (valor) {
-                      setState(() {
-                        selectedPrioridad = valor!;
-                      });
-                    },
+                  SizedBox(
+                    width: 140, 
+                    child: DropdownButton<String>(
+                      underline: Container(color: Colors.white,),
+                      isExpanded: true, 
+                      value: selectedPrioridad,
+                      items: prioridades.map((opcion) {
+                        return DropdownMenuItem<String>(
+                          value: opcion,
+                          child: Text('Prioridad: $opcion'),
+                        );
+                      }).toList(),
+                      onChanged: (valor) {
+                        setState(() {
+                          selectedPrioridad = valor!;
+                        });
+                      },
+                    ),
                   ),
                 ],
               ),

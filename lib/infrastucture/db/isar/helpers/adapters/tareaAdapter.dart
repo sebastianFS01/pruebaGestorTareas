@@ -1,5 +1,6 @@
 
 
+import 'package:isar/isar.dart';
 import 'package:prueba/domain/models/tarea.dart';
 import 'package:prueba/infrastucture/db/isar/collections/tarea.dart';
 

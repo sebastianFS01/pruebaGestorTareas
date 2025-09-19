@@ -27,33 +27,37 @@ class HomeHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 6),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              totalPoints,
-              style: const TextStyle(
-                color: Color(0xFF4F8A8B),
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
+        SizedBox(
+          height: 50,
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                totalPoints,
+                style: const TextStyle(
+                  color: Color(0xFF4F8A8B),
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-            const Spacer(),
-            SizedBox(
-              width: 120,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: LinearProgressIndicator(
-                  value: progress,
-                  minHeight: 12,
-                  backgroundColor: const Color(0xFFE0E5EC),
-                  valueColor: const AlwaysStoppedAnimation<Color>(
-                    Color(0xFF4F8A8B),
+              const Spacer(),
+              SizedBox(
+                width: double.infinity,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: LinearProgressIndicator(
+                    value: progress,
+                    minHeight: 12,
+                    backgroundColor: const Color(0xFFE0E5EC),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      Color(0xFF4F8A8B),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );

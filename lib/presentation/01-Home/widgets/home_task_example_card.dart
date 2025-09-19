@@ -27,77 +27,107 @@ class HomeTaskExampleCard extends StatelessWidget {
           arguments: {'tarea': tarea, 'isEdit': true},
         );
       },
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(Responsive.width(context, 0.04)),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(Responsive.width(context, 0.03)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.08),
-              blurRadius: Responsive.width(context, 0.02),
-              offset: Offset(0, Responsive.height(context, 0.005)),
-            ),
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    tarea.title,
-                    style: TextStyle(
-                      color: const Color(0xFF2D3142),
-                      fontSize: Responsive.fontSize(context, 16),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: Responsive.height(context, 0.005)),
-                  Text(
-                    tarea.description,
-                    style: TextStyle(fontSize: Responsive.fontSize(context, 14), color: Colors.black87),
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    children: tarea.categoria
-                        .map((cat) => Chip(label: Text(cat)))
-                        .toList(),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Text(
-                        '$estado: ',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(tarea.estado),
-                      const SizedBox(width: 16),
-                      Text(
-                        'Prioridad: ',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(tarea.prioridad),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Text(
-                        '$totalPoints: ',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text('${tarea.valorPuntos}'),
-                    ],
-                  ),
-                ],
+      child: Stack(
+        alignment: AlignmentGeometry.topRight,
+        children: [
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(Responsive.width(context, 0.04)),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(
+                Responsive.width(context, 0.03),
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.08),
+                  blurRadius: Responsive.width(context, 0.02),
+                  offset: Offset(0, Responsive.height(context, 0.005)),
+                ),
+              ],
             ),
-            IconButton(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        tarea.title,
+                        style: TextStyle(
+                          color: const Color(0xFF2D3142),
+                          fontSize: Responsive.fontSize(context, 16),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: Responsive.height(context, 0.005)),
+                      Text(
+                        tarea.description,
+                        style: TextStyle(
+                          fontSize: Responsive.fontSize(context, 14),
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        children: tarea.categoria
+                            .map((cat) => Chip(label: Text(cat)))
+                            .toList(),
+                      ),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Row(
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  '$estado: ',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(tarea.estado),
+                                const SizedBox(width: 8),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  'Prioridad: ',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(tarea.prioridad),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Text(
+                            '$totalPoints: ',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text('${tarea.valorPuntos}'),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+            Padding(
+              padding: EdgeInsetsGeometry.all(16),
+              child: IconButton(
               icon: const Icon(Icons.delete, color: Color(0xFFB00020)),
               tooltip: 'Eliminar tarea',
               onPressed: () {
@@ -116,29 +146,29 @@ class HomeTaskExampleCard extends StatelessWidget {
                       Consumer(
                         builder: (context, ref, child) {
                           return ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFB00020),
-                            foregroundColor: Colors.white,
-                          ),
-                          onPressed: () {
-                            pressButtonEliminar(context, ref, tarea.id!);
-                            Navigator.of(context).pop();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Tarea eliminada')),
-                            );
-                          },
-                          icon: const Icon(Icons.delete),
-                          label: const Text('Eliminar'),
-                        );
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFFB00020),
+                              foregroundColor: Colors.white,
+                            ),
+                            onPressed: () {
+                              pressButtonEliminar(context, ref, tarea.id!);
+                              Navigator.of(context).pop();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Tarea eliminada')),
+                              );
+                            },
+                            icon: const Icon(Icons.delete),
+                            label: const Text('Eliminar'),
+                          );
                         },
                       ),
                     ],
                   ),
                 );
               },
+                        ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }

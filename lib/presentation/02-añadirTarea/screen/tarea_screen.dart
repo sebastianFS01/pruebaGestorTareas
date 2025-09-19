@@ -12,12 +12,9 @@ class TareaScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    final tarea = args != null && args.containsKey('tarea')
-        ? args['tarea']
-        : null;
-    final isEdit = args != null && args['isEdit'] == true;
+      final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    final Tarea tarea = args['tarea'];
+    final isEdit = args['isEdit'] ?? false;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -49,6 +46,7 @@ class TareaScreen extends StatelessWidget {
                         context,
                         ref,
                         Tarea(
+                          id: tarea.id,
                           estado: estado,
                           prioridad: prioridad,
                           valorPuntos: 50,
