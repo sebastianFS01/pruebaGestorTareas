@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-
-=======
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // import removed: categorias_riverpod.dart (no longer needed)
 import 'package:prueba/configuration/providers/riverpod/tareas/tareas_riverpod.dart';
->>>>>>> 4daea6259d837e6223d5c4ccd5bdc923fc00a8dc
 
 /// Widget reutilizable para añadir y editar tareas.
 /// Si [tarea] es null, funciona como añadir; si no, como editar.
@@ -365,7 +361,7 @@ class _TareaFormState extends State<TareaForm> {
                       ],
                     ),
                   );
-                }).toList(),
+                }),
               ],
             ),
           const SizedBox(height: 18),

@@ -1,12 +1,7 @@
-<<<<<<< HEAD
-import 'package:prueba/configuration/providers/riverpod/tareas/tareas_riverpod.dart';
-import 'package:prueba/presentation/01-Home/helpers/init_tareas_helper.dart';
-=======
 import 'package:prueba/configuration/providers/riverpod/tareas/tareas_riverpod.dart'
     hide categoriasProvider;
 // import eliminado: categorias_riverpod.dart (ya no se usa)
 import 'package:prueba/presentation/01-Home/helpers/points_level_helper.dart';
->>>>>>> 4daea6259d837e6223d5c4ccd5bdc923fc00a8dc
 import 'package:prueba/presentation/02-a%C3%B1adirTarea/screen/tarea_screen.dart';
 import 'package:prueba/presentation/03-Historial/screen/historial_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,13 +9,8 @@ import '../widgets/user_name_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prueba/configuration/constants/responsive.dart';
-<<<<<<< HEAD
-import 'package:prueba/domain/models/tarea.dart';
-import 'package:prueba/presentation/01-Home/helpers/points_level_helper.dart';
-=======
 
 import 'package:prueba/presentation/01-Home/helpers/init_tareas_helper.dart';
->>>>>>> 4daea6259d837e6223d5c4ccd5bdc923fc00a8dc
 import '../widgets/home_header.dart';
 import '../widgets/home_state_category_buttons.dart';
 import '../widgets/home_task_example_card.dart';
