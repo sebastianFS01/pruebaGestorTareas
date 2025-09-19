@@ -19,7 +19,7 @@ import '../widgets/home_add_task_button.dart';
 import '../widgets/home_bottom_navigation.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
-  static const route = 'home'; 
+  static const route = 'home';
   const HomeScreen({super.key});
 
   @override
@@ -157,15 +157,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Expanded(
                 child: Builder(
                   builder: (context) {
-                    final tareasFiltradas = selectedPrioridad == 'Todas'
-                        ? tareaList
-                        : tareaList
-                              .where(
-                                (t) =>
-                                    t.prioridad.toLowerCase() ==
-                                    selectedPrioridad.toLowerCase(),
-                              )
-                              .toList();
+                    // Filtrar por estado y prioridad
+                    final tareasFiltradas = tareaList
+                        .where(
+                          (t) => t.estado.toLowerCase().contains(
+                            selectedEstado.toLowerCase(),
+                          ),
+                        )
+                        .where(
+                          (t) =>
+                              selectedPrioridad == 'Todas' ||
+                              t.prioridad.toLowerCase() ==
+                                  selectedPrioridad.toLowerCase(),
+                        )
+                        .toList();
                     return ListView.builder(
                       itemBuilder: (context, index) {
                         return Column(
