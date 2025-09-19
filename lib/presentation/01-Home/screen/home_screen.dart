@@ -1,5 +1,8 @@
+import 'package:intl/intl.dart';
 import 'package:prueba/configuration/providers/riverpod/tareas/tareas_riverpod.dart'
     hide categoriasProvider;
+import 'package:prueba/domain/models/historial.dart';
+import 'package:prueba/presentation/01-Home/helpers/historial_crear_button.dart';
 // import eliminado: categorias_riverpod.dart (ya no se usa)
 import 'package:prueba/presentation/01-Home/helpers/points_level_helper.dart';
 import 'package:prueba/infrastucture/db/isar/local_database_helper.dart';
@@ -289,7 +292,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               return false;
                             } else if (direction ==
                                 DismissDirection.startToEnd) {
+                              DateTime fechaActual = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
                               // Swipe derecha: completar tarea
+                              crearHistorialTarea(ref, 
+                              Historial(
+                                puntosObtenidos: tarea.valorPuntos, 
+                                titulo: tarea.title, 
+                                fechaFinalizacion: fechaActual));
                               if (tarea.estado == '✅ Hecho') {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
