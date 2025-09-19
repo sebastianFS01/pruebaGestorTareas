@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:prueba/configuration/providers/riverpod/tareas/tareas_riverpod.dart';
-import 'package:prueba/domain/models/categorias.dart';
-import 'package:prueba/presentation/02-a%C3%B1adirTarea/helpers/categoria_logic_button.dart';
-import 'package:prueba/presentation/02-a%C3%B1adirTarea/helpers/init_categorias.dart';
+
 
 /// Widget reutilizable para añadir y editar tareas.
 /// Si [tarea] es null, funciona como añadir; si no, como editar.

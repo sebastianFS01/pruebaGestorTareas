@@ -1,11 +1,14 @@
 import 'package:isar/isar.dart';
 import 'package:prueba/domain/datasourcers/local-database/local_database_dataresource.dart';
 import 'package:prueba/domain/models/categorias.dart';
+import 'package:prueba/domain/models/historial.dart';
 import 'package:prueba/domain/models/tarea.dart';
 import 'package:prueba/infrastucture/db/isar/collections/categorias.dart';
+import 'package:prueba/infrastucture/db/isar/helpers/adapters/historialAdapter.dart';
 import 'package:prueba/infrastucture/db/isar/helpers/adapters/tareaAdapter.dart';
 import 'package:prueba/infrastucture/db/isar/local_database_helper.dart';
 import 'package:prueba/infrastucture/db/isar/queries/local_database_categorias.dart';
+import 'package:prueba/infrastucture/db/isar/queries/local_database_historial.dart';
 import 'package:prueba/infrastucture/db/isar/queries/local_database_tareas.dart';
 
 class LocalDatabaseDatasourceImpl implements LocalDatabaseDataresource {
@@ -53,5 +56,19 @@ class LocalDatabaseDatasourceImpl implements LocalDatabaseDataresource {
      final db = await _isarFuture;
     final categorias = await LocalDatabaseCategorias(isar: db).traerCategorias();
     return categorias.map((it) => Categorias(name: it.name!, id: it.id)).toList();
+  }
+
+  @override
+  Future nuevoHistorial(Historial historial) async {
+    final db = await _isarFuture;
+    final nuevoHistorial = HistorialAdapter.toEntity(historial);
+    await LocalDatabaseHistorial(isar: db).crearHistorial(nuevoHistorial); 
+  }
+
+  @override
+  Future<List<Historial>> traerHistorial()async {
+    final db = await _isarFuture;
+    final historial = await LocalDatabaseHistorial(isar: db).traerHistorial();
+    return historial.map((toElement) => HistorialAdapter.toDomain(toElement)).toList();
   }
 }

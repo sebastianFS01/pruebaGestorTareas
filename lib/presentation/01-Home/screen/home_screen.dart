@@ -1,4 +1,5 @@
 import 'package:prueba/configuration/providers/riverpod/tareas/tareas_riverpod.dart';
+import 'package:prueba/presentation/01-Home/helpers/init_tareas_helper.dart';
 import 'package:prueba/presentation/02-a%C3%B1adirTarea/screen/tarea_screen.dart';
 import 'package:prueba/presentation/03-Historial/screen/historial_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,12 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prueba/configuration/constants/responsive.dart';
 import 'package:prueba/domain/models/tarea.dart';
-<<<<<<< HEAD
-import 'package:prueba/presentation/01-Home/helpers/init_tareas_helper.dart';
-=======
-import 'package:prueba/presentation/01-Home/helpers/init_data_helper.dart';
 import 'package:prueba/presentation/01-Home/helpers/points_level_helper.dart';
->>>>>>> 2e24f759d5f46d79e0499466be35c9e87c8e6e66
 import '../widgets/home_header.dart';
 import '../widgets/home_state_category_buttons.dart';
 import '../widgets/home_task_example_card.dart';
@@ -21,7 +17,7 @@ import '../widgets/home_add_task_button.dart';
 import '../widgets/home_bottom_navigation.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
-  static const route = 'home'; // 👈 mejor static const
+  static const route = 'home'; 
   const HomeScreen({super.key});
 
   @override
