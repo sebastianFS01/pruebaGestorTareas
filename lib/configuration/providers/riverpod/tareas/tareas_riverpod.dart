@@ -7,38 +7,26 @@ final tareaProvider = StateProvider<List<Tarea>>((ref) {
   return [];
 });
 
-
 final categoriasProvider = StateProvider<List<Categorias>>((ref) {
   return [];
 });
 
+class TareaFormProvider extends StateNotifier<TareaState> {
+  TareaFormProvider() : super(TareaState(formKey: GlobalKey<FormState>()));
 
-class TareaFormProvider extends StateNotifier<TareaState>{
-  
-  TareaFormProvider():super(TareaState(formKey: GlobalKey<FormState>()));
-
-
- bool validarFormulario() {
+  bool validarFormulario() {
     final form = state.formKey.currentState;
     return form?.validate() ?? false;
   }
-
 }
 
 class TareaState {
   final GlobalKey<FormState> formKey;
   final Tarea? tarea;
 
-  TareaState({
-    required this.formKey,
-    this.tarea,
-  });
+  TareaState({required this.formKey, this.tarea});
 
   TareaState copyWith({Tarea? tarea}) {
-    return TareaState(
-      formKey: formKey, 
-      tarea: tarea ?? this.tarea,
-    );
+    return TareaState(formKey: formKey, tarea: tarea ?? this.tarea);
   }
 }
-

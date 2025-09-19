@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 
+=======
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// import removed: categorias_riverpod.dart (no longer needed)
+import 'package:prueba/configuration/providers/riverpod/tareas/tareas_riverpod.dart';
+>>>>>>> 4daea6259d837e6223d5c4ccd5bdc923fc00a8dc
 
 /// Widget reutilizable para añadir y editar tareas.
 /// Si [tarea] es null, funciona como añadir; si no, como editar.
@@ -81,7 +88,6 @@ class _TareaFormState extends State<TareaForm> {
         : '💾 Guardar';
 
     final estados = ['⏳ Pendiente', '🚧 En curso', '✅ Hecho'];
-    final categoriasPredef = ['💼 Trabajo', '🏠 Personal', '✨ Otro'];
 
     return Form(
       key: _formKey,
@@ -224,6 +230,15 @@ class _TareaFormState extends State<TareaForm> {
                       vertical: 4,
                     ),
                   ),
+                  onSubmitted: (value) {
+                    final nueva = value.trim();
+                    if (nueva.isNotEmpty && !_categorias.contains(nueva)) {
+                      setState(() {
+                        _categorias.add(nueva);
+                        _nuevaCategoriaController.clear();
+                      });
+                    }
+                  },
                 ),
               ),
               IconButton(
@@ -242,26 +257,36 @@ class _TareaFormState extends State<TareaForm> {
           ),
           const SizedBox(height: 8),
 
-          // Chips de categorías predefinidas
-          Wrap(
-            spacing: 8,
-            children: categoriasPredef
-                .map(
-                  (cat) => FilterChip(
-                    label: Text(cat),
-                    selected: _categorias.contains(cat),
-                    onSelected: (selected) {
-                      setState(() {
-                        if (selected) {
-                          _categorias.add(cat);
-                        } else {
-                          _categorias.remove(cat);
-                        }
-                      });
-                    },
-                  ),
-                )
-                .toList(),
+          // Chips de categorías existentes (provider)
+          Consumer(
+            builder: (context, ref, _) {
+              final tareas = ref.watch(tareaProvider);
+              // Extraer todas las categorías únicas de las tareas existentes
+              final Set<String> categoriasUsadas = {};
+              for (final tarea in tareas) {
+                categoriasUsadas.addAll(tarea.categoria);
+              }
+              // Solo mostrar las que no están ya seleccionadas
+              final disponibles = categoriasUsadas
+                  .where((cat) => !_categorias.contains(cat))
+                  .toList();
+              if (disponibles.isEmpty) return const SizedBox.shrink();
+              return Wrap(
+                spacing: 8,
+                children: disponibles
+                    .map(
+                      (cat) => ActionChip(
+                        label: Text(cat),
+                        onPressed: () {
+                          setState(() {
+                            _categorias.add(cat);
+                          });
+                        },
+                      ),
+                    )
+                    .toList(),
+              );
+            },
           ),
           const SizedBox(height: 8),
 
