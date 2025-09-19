@@ -2,6 +2,9 @@ import 'package:prueba/configuration/providers/riverpod/tareas/tareas_riverpod.d
     hide categoriasProvider;
 // import eliminado: categorias_riverpod.dart (ya no se usa)
 import 'package:prueba/presentation/01-Home/helpers/points_level_helper.dart';
+import 'package:prueba/infrastucture/db/isar/local_database_helper.dart';
+import 'package:prueba/infrastucture/db/isar/queries/local_database_tareas.dart';
+import 'package:prueba/infrastucture/db/isar/collections/tarea.dart';
 import 'package:prueba/presentation/02-a%C3%B1adirTarea/screen/tarea_screen.dart';
 import 'package:prueba/presentation/03-Historial/screen/historial_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +17,7 @@ import 'package:prueba/presentation/01-Home/helpers/init_tareas_helper.dart';
 import '../widgets/home_header.dart';
 import '../widgets/home_state_category_buttons.dart';
 import '../widgets/home_task_example_card.dart';
+import 'package:prueba/domain/models/tarea.dart';
 import '../widgets/category_filter_chips.dart';
 import '../widgets/home_add_task_button.dart';
 import '../widgets/home_bottom_navigation.dart';
@@ -27,6 +31,27 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  Future<void> _completarTareaEnDB(Tarea tarea) async {
+    final isar = await LocalDatabaseHelper.db.isar;
+    final db = LocalDatabaseTareas(isar: isar);
+    final tareaActualizada = TareaCollection()
+      ..id = tarea.id ?? 0
+      ..title = tarea.title
+      ..description = tarea.description
+      ..estado = '✅ Hecho'
+      ..prioridad = tarea.prioridad
+      ..valorPuntos = tarea.valorPuntos
+      ..categoria = tarea.categoria;
+    await db.guardarOcrearTarea(tareaActualizada);
+  }
+
+  Future<void> _eliminarTareaEnDB(int? id) async {
+    if (id == null) return;
+    final isar = await LocalDatabaseHelper.db.isar;
+    final db = LocalDatabaseTareas(isar: isar);
+    await db.eliminarTarea(id);
+  }
+
   // Filtro de prioridad
   String selectedPrioridad = 'Todas';
   final List<String> prioridades = ['Todas', 'Alta', 'Media', 'Baja'];
@@ -163,21 +188,147 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Expanded(
                 child: Builder(
                   builder: (context) {
-                    final tareasFiltradas = selectedPrioridad == 'Todas'
-                        ? tareaList
-                        : tareaList
-                              .where(
-                                (t) =>
-                                    t.prioridad.toLowerCase() ==
-                                    selectedPrioridad.toLowerCase(),
-                              )
-                              .toList();
+                    // Filtrar por estado y prioridad
+                    final tareasFiltradas = tareaList
+                        .where(
+                          (t) => t.estado.toLowerCase().contains(
+                            selectedEstado.toLowerCase(),
+                          ),
+                        )
+                        .where(
+                          (t) =>
+                              selectedPrioridad == 'Todas' ||
+                              t.prioridad.toLowerCase() ==
+                                  selectedPrioridad.toLowerCase(),
+                        )
+                        .toList();
                     return ListView.builder(
                       itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            HomeTaskExampleCard(tarea: tareasFiltradas[index]),
-                          ],
+                        final tarea = tareasFiltradas[index];
+                        return Dismissible(
+                          key: ValueKey(
+                            tarea.id ?? tarea.title + tarea.description,
+                          ),
+                          background: Container(
+                            color: Colors.green,
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.only(left: 24),
+                            child: const Row(
+                              children: [
+                                Icon(Icons.check, color: Colors.white),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Completar',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          secondaryBackground: Container(
+                            color: Colors.red,
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.only(right: 24),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Icon(Icons.delete, color: Colors.white),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Eliminar',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          confirmDismiss: (direction) async {
+                            if (direction == DismissDirection.endToStart) {
+                              // Swipe izquierda: eliminar con confirmación
+                              final confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('¿Eliminar tarea?'),
+                                  content: const Text(
+                                    '¿Estás seguro de que deseas eliminar esta tarea? Esta acción no se puede deshacer.',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
+                                      child: const Text('Cancelar'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(true),
+                                      child: const Text(
+                                        'Eliminar',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              if (confirm == true) {
+                                // Eliminar tarea del provider y base de datos aquí
+                                final tareas = [...ref.read(tareaProvider)];
+                                tareas.removeWhere((t) => t.id == tarea.id);
+                                ref.read(tareaProvider.notifier).state = tareas;
+                                await _eliminarTareaEnDB(tarea.id);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Tarea eliminada'),
+                                  ),
+                                );
+                                return true;
+                              }
+                              return false;
+                            } else if (direction ==
+                                DismissDirection.startToEnd) {
+                              // Swipe derecha: completar tarea
+                              if (tarea.estado == '✅ Hecho') {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'La tarea ya está completada',
+                                    ),
+                                  ),
+                                );
+                                return false;
+                              }
+                              final tareas = [...ref.read(tareaProvider)];
+                              final idx = tareas.indexWhere(
+                                (t) => t.id == tarea.id,
+                              );
+                              if (idx != -1) {
+                                tareas[idx] = Tarea(
+                                  id: tarea.id,
+                                  title: tarea.title,
+                                  description: tarea.description,
+                                  estado: '✅ Hecho',
+                                  prioridad: tarea.prioridad,
+                                  valorPuntos: tarea.valorPuntos,
+                                  categoria: tarea.categoria,
+                                );
+                                ref.read(tareaProvider.notifier).state = tareas;
+                                await _completarTareaEnDB(tarea);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      '¡Tarea completada! +${tarea.valorPuntos} puntos',
+                                    ),
+                                  ),
+                                );
+                              }
+                              return false; // No eliminar de la lista visualmente
+                            }
+                            return false;
+                          },
+                          child: HomeTaskExampleCard(tarea: tarea),
                         );
                       },
                       itemCount: tareasFiltradas.length,
